@@ -10,9 +10,15 @@ namespace Domain.Models
 {
     public class Product
     {
+
+        public Product()
+        {
+            Id = Guid.NewGuid();    
+        }
+
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]//this will only work (incremenent the value by 1) for an int
+        public Guid Id { get; set; } //31F61C7D-61EE-484B-9B39-4FB5BBC2D0B5
 
         [Required]
         public string Name { get; set; }
