@@ -15,7 +15,7 @@ namespace Domain.Models
         public int Id { get; set; }
 
         [ForeignKey("Product")]
-        public int ProductFK { get; set; } //foreign key
+        public Guid ProductFK { get; set; } //foreign key
         public Product Product { get; set; } //navigational property
 
         public double Price { get; set; }

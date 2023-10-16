@@ -13,7 +13,7 @@ namespace Domain.Models
 
         public Product()
         {
-            Id = Guid.NewGuid();    
+            //Id = Guid.NewGuid();    
         }
 
         [Key]
@@ -28,7 +28,7 @@ namespace Domain.Models
 
         public int Stock { get; set; }
 
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
        
         [ForeignKey(nameof(Category))] 
