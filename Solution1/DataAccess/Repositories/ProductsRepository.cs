@@ -21,6 +21,8 @@ namespace DataAccess.Repositories
             _shoppingCartContext= shoppingCartContext;  
         }
 
+        
+
         //What is the difference between IQueryable and List
         //1. (drawback) in IQueryable you cannot debug it while in the List you can
         //2. (advantage) IQueryable never opens a call to the database until you convert it into a List

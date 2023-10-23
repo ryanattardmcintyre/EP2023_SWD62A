@@ -23,7 +23,10 @@ namespace Presentation
             builder.Services.AddControllersWithViews();
 
 
+            //these lines they basically register the type of class with the services collection (so that the injector class
+            //is aware of which classes have to be initialized and eventually requested by client classes)
             builder.Services.AddScoped(typeof(ProductsRepository));
+            builder.Services.AddScoped(typeof(CategoriesRepository));
 
 
             var app = builder.Build();

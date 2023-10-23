@@ -41,6 +41,12 @@
                 </div>
             }
 
+            @if (TempData["message"] != null)
+            {
+                <div class="alert alert-primary" role="alert">
+                    @TempData["message"].ToString()
+                </div>
+            }
 
             @RenderBody()
         </main>
