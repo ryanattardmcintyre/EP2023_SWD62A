@@ -1,4 +1,5 @@
 using DataAccess.DataContext;
+using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
  
@@ -20,6 +21,10 @@ namespace Presentation
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ShoppingCartContext>();
             builder.Services.AddControllersWithViews();
+
+
+            builder.Services.AddScoped(typeof(ProductsRepository));
+
 
             var app = builder.Build();
 

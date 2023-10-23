@@ -16,7 +16,7 @@ namespace Domain.Models
 
         [ForeignKey("Product")]
         public Guid ProductFK { get; set; } //foreign key
-        public Product Product { get; set; } //navigational property
+        public virtual Product Product { get; set; } //navigational property
 
         public double Price { get; set; }
 
@@ -24,6 +24,6 @@ namespace Domain.Models
 
         [ForeignKey("Order")]
         public int OrderFK { get; set; } //foreign key
-        public Order Order { get; set; } //navigational property
+        public virtual Order Order { get; set; } //navigational property
     }
 }
