@@ -10,6 +10,8 @@ namespace Domain.Models
 {
     public class Product
     {
+        //add-migration "NameOfMigration" -context ShoppingCartDbContext
+        //update-database
 
         public Product()
         {

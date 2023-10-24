@@ -50,8 +50,20 @@ namespace DataAccess.Repositories
 
         public void UpdateProduct(Product product)
         {
+
         }
 
-        public void DeleteProduct(Guid id) { }
+        public void DeleteProduct(Guid id) {
+            var productToDelete = GetProduct(id);
+            if(productToDelete!=null) {
+                _shoppingCartContext.Products.Remove(productToDelete);
+                _shoppingCartContext.SaveChanges();
+            }
+            else
+            {
+                throw new Exception("No product to delete");
+            }
+        
+        }
     }
 }

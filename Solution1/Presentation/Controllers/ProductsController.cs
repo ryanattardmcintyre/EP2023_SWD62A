@@ -67,6 +67,7 @@ namespace Presentation.Controllers
             }
             catch (Exception ex)
             {
+                myModel.Categories = _categoriesRepository.GetCategories();
                 TempData["error"] = "Product was not inserted successfully";
                 return View(myModel);
             }
@@ -74,5 +75,34 @@ namespace Presentation.Controllers
 
             
         }
+
+
+        public IActionResult Details(Guid id)
+        {
+            var product = _productsRepository.GetProduct(id);
+            if (product == null)
+            {
+                TempData["error"] = "Product was not found";
+                return RedirectToAction("Index");
+
+            }
+            else
+            {
+                ListProductViewModel model = new ListProductViewModel()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    Stock = product.Stock,
+                    Description = product.Description,
+                    CategoryName = product.Category.Name,
+                    Image = product.Image
+                };
+
+                return View(model);
+            }
+        }
+
+
     }
 }
