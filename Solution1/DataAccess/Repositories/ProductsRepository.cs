@@ -14,14 +14,15 @@ namespace DataAccess.Repositories
     public class ProductsRepository
     {
 
-        private ShoppingCartContext _shoppingCartContext;
+        public ShoppingCartContext _shoppingCartContext { get; set; }
 
         //constructor
-        public ProductsRepository(ShoppingCartContext shoppingCartContext ) {
-            _shoppingCartContext= shoppingCartContext;  
+        public ProductsRepository(ShoppingCartContext shoppingCartContext)
+        {
+            _shoppingCartContext = shoppingCartContext;
         }
 
-        
+
 
         //What is the difference between IQueryable and List
         //1. (drawback) in IQueryable you cannot debug it while in the List you can

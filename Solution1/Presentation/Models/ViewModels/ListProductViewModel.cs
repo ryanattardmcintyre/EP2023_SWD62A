@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,6 +18,8 @@ namespace Presentation.Models.ViewModels
         public int Stock { get; set; }
 
         public string? Image { get; set; }
+
+        [DisplayName("Category")]
         public string CategoryName { get; set; }
 
     }

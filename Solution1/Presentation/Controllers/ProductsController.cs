@@ -49,18 +49,26 @@ namespace Presentation.Controllers
             //validation....must be done here
             try
             {
-                _productsRepository.AddProduct(new Product()
-                {
-                    CategoryFK = myModel.CategoryFK,
-                    Name = myModel.Name,
-                    Description = myModel.Description,
-                    Price = myModel.Price,
-                    Stock = myModel.Stock,
-                    Supplier = myModel.Supplier,
-                    WholesalePrice = myModel.WholesalePrice
-                });
 
-                TempData["message"] = "Product saved successfully";
+                if(_productsRepository.GetProducts().Where(x=>x.Name == myModel.Name).Count() == 0)
+                {
+                         _productsRepository.AddProduct(new Product()
+                                        {
+                                            CategoryFK = myModel.CategoryFK,
+                                            Name = myModel.Name,
+                                            Description = myModel.Description,
+                                            Price = myModel.Price,
+                                            Stock = myModel.Stock,
+                                            Supplier = myModel.Supplier,
+                                            WholesalePrice = myModel.WholesalePrice
+                                        }); 
+                    
+                    TempData["message"] = "Product saved successfully";
+                }
+
+               
+
+              
 
                 return RedirectToAction("Index");
 
@@ -101,6 +109,22 @@ namespace Presentation.Controllers
 
                 return View(model);
             }
+        }
+
+
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                _productsRepository.DeleteProduct(id);
+                TempData["message"] = "Product deleted successfully";
+             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Product was not deleted; Input might have been tampered and product not found";
+            }
+
+            return RedirectToAction("Index");
         }
 
 

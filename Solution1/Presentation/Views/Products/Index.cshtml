@@ -59,7 +59,8 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @*Html.ActionLink("Delete", "Delete", new {  id=item.Id  }, new {onclick=''})*@
+                 <a href="/Products/Delete?id=@item.Id" onclick='return confirm("Are you sure?")'>Delete</a>
             </td>
         </tr>
 }

@@ -30,7 +30,8 @@ namespace Domain.Models
 
         public int Stock { get; set; }
 
-        public string? Image { get; set; }
+        public string? Image { get; set; } //recommendation: never store the physical image in the db
+                                           //in the db store the relative image path e.g. /Images/name.jpg
 
        
         [ForeignKey(nameof(Category))] 

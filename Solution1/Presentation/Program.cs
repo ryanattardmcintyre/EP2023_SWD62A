@@ -25,8 +25,14 @@ namespace Presentation
 
             //these lines they basically register the type of class with the services collection (so that the injector class
             //is aware of which classes have to be initialized and eventually requested by client classes)
-            builder.Services.AddScoped(typeof(ProductsRepository));
+            builder.Services.AddScoped(typeof(ProductsRepository) );
             builder.Services.AddScoped(typeof(CategoriesRepository));
+
+            //we have 3 methods which one can use to determine/control how many instances of the chosen classes are actually created
+
+            //AddScoped - will create ONE/an instance one for every request
+            //AddTransient - will create an x no. of instances depending on how many calls you have
+            //AddSingleton - will create ONE instance for all calls, for all requests AND for all users
 
 
             var app = builder.Build();
