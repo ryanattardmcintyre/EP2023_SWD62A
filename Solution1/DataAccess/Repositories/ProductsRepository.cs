@@ -51,7 +51,19 @@ namespace DataAccess.Repositories
 
         public void UpdateProduct(Product product)
         {
+            var originalProduct = GetProduct(product.Id);
+            if (originalProduct != null)
+            {
+                originalProduct.Supplier = product.Supplier;
+                originalProduct.WholesalePrice = product.WholesalePrice;
+                originalProduct.Price = product.Price;
+                originalProduct.Name = product.Name;
+                originalProduct.Description = product.Description;
+                originalProduct.CategoryFK = product.CategoryFK;
+                originalProduct.Image = product.Image;
+                originalProduct.Stock = product.Stock;
 
+            }
         }
 
         public void DeleteProduct(Guid id) {
