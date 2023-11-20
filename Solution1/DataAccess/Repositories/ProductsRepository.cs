@@ -1,4 +1,5 @@
 ﻿using DataAccess.DataContext;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,7 @@ namespace DataAccess.Repositories
 {
     //Dependency Injection - design pattern that manages the creation of instances
 
-    public class ProductsRepository
+    public class ProductsRepository: IProducts
     {
 
         public ShoppingCartContext _shoppingCartContext { get; set; }
@@ -62,7 +63,7 @@ namespace DataAccess.Repositories
                 originalProduct.CategoryFK = product.CategoryFK;
                 originalProduct.Image = product.Image;
                 originalProduct.Stock = product.Stock;
-
+                _shoppingCartContext.SaveChanges();
             }
         }
 

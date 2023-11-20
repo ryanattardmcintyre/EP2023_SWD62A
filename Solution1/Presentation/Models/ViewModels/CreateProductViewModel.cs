@@ -1,5 +1,6 @@
 ﻿using DataAccess.Repositories;
 using Domain.Models;
+using Presentation.Validators;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,11 +15,17 @@ namespace Presentation.Models.ViewModels
 
             Categories = categoriesRepository.GetCategories();   //populate the list of Categories
         }
+
+
+        //Compare 
+        //RegularExpression
+
         
-        [Required]
+        [Required(AllowEmptyStrings =false, ErrorMessage ="Please type something as a name")]
         public string Name { get; set; }
         public string Description { get; set; }
 
+        [Range(0,double.MaxValue, ErrorMessage ="Price input is out of range" )]
         public double Price { get; set; }
 
         public int Stock { get; set; }
@@ -27,7 +34,9 @@ namespace Presentation.Models.ViewModels
 
         public IFormFile ImageFile { get; set; }
         public IQueryable<Category> Categories { get; set; }
-        public int CategoryFK { get; set; } //foreign key property
+
+        [CategoryValidation]
+        public int CategoryFK { get; set; } //foreign key property //3
 
         [DisplayName("Wholesale Price")]
         public double WholesalePrice { get; set; }

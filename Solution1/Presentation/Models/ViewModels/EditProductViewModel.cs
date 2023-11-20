@@ -1,5 +1,6 @@
 ﻿using DataAccess.Repositories;
 using Domain.Models;
+using Presentation.Validators;
 using System.ComponentModel;
 
 namespace Presentation.Models.ViewModels
@@ -13,6 +14,7 @@ namespace Presentation.Models.ViewModels
             Categories = categoriesRepository.GetCategories();   //populate the list of Categories
         }
 
+        [ProductIdValidation]
         public Guid Id { get; set; } //is needed because we need to know which product is to be edited!
 
         public string Name { get; set; }
@@ -26,6 +28,8 @@ namespace Presentation.Models.ViewModels
 
         public IFormFile ImageFile { get; set; }
         public IQueryable<Category> Categories { get; set; }
+        
+        [CategoryValidation]
         public int CategoryFK { get; set; } //foreign key property
 
         [DisplayName("Wholesale Price")]

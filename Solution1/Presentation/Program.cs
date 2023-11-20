@@ -1,5 +1,6 @@
 using DataAccess.DataContext;
 using DataAccess.Repositories;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
  
@@ -25,8 +26,18 @@ namespace Presentation
 
             //these lines they basically register the type of class with the services collection (so that the injector class
             //is aware of which classes have to be initialized and eventually requested by client classes)
-            builder.Services.AddScoped(typeof(ProductsRepository) );
+            //builder.Services.AddScoped(typeof(ProductsRepository) );
+
+            //need the path to the Data Folder //C:\Users\attar\source\repos\EP2023_SWD62A\Solution1\Presentation \Data\
+
+            string pathToJsonFile = builder.Environment.ContentRootPath + "Data\\products.json";
             builder.Services.AddScoped(typeof(CategoriesRepository));
+
+            
+            builder.Services.AddScoped<IProducts, ProductsRepository>();
+            //builder.Services.AddScoped<IProducts, ProductsJsonRepository>(x => new ProductsJsonRepository(pathToJsonFile));
+
+
 
             //we have 3 methods which one can use to determine/control how many instances of the chosen classes are actually created
 
@@ -36,6 +47,8 @@ namespace Presentation
 
 
             var app = builder.Build();
+
+          
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

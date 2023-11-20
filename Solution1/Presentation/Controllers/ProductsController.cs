@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repositories;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models.ViewModels;
@@ -7,30 +8,38 @@ namespace Presentation.Controllers
 {
     public class ProductsController : Controller
     {
-        private ProductsRepository _productsRepository;
+        private IProducts _productsRepository;
         private CategoriesRepository _categoriesRepository;
-        public ProductsController(ProductsRepository productsRepository, CategoriesRepository categoriesRepository) { 
+        public ProductsController(IProducts productsRepository, CategoriesRepository categoriesRepository) { 
             _productsRepository= productsRepository;
             _categoriesRepository= categoriesRepository;
         } 
         public IActionResult Index()
         {
-          IQueryable<Product> list = _productsRepository.GetProducts().OrderBy(x=>x.Name);
+            try
+            {
+                IQueryable<Product> list = _productsRepository.GetProducts().OrderBy(x => x.Name);
 
-            var output = from p in list
-                         select new ListProductViewModel()
-                         {
-                             Id = p.Id,
-                             Name = p.Name,
-                             Description = p.Description,
-                             Image = p.Image,
-                             Price = p.Price,
-                             Stock = p.Stock,
-                             CategoryName = p.Category.Name
-                         };
-          
+                var output =( from p in list
+                             select new ListProductViewModel()
+                             {
+                                 Id = p.Id,
+                                 Name = p.Name,
+                                 Description = p.Description,
+                                 Image = p.Image,
+                                 Price = p.Price,
+                                 Stock = p.Stock,
+                                 CategoryName = _categoriesRepository.GetCategories().SingleOrDefault(x=>x.Id == p.CategoryFK).Name
+                             }).ToList();
 
-          return View(output);
+
+                return View(output);
+            }
+            catch(Exception ex)
+            {
+                TempData["error"] = ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         //part 1: the method that loads the page with empty fields
@@ -49,6 +58,14 @@ namespace Presentation.Controllers
             string relativePath = "";
             try
             {
+                if(ModelState.IsValid == false) //there was something wrong with one of the inputs and it is being signalled by a/some validator(s)
+                {
+
+                    myModel.Categories = _categoriesRepository.GetCategories();
+                    return View(myModel);
+                
+                }    
+
                 //1. rename the image file with a unique name
                 //eg. B269FE87-E6D3-4508-BAB0-1E0D0EE838C6.jpg
                 string filename = Guid.NewGuid() + System.IO.Path.GetExtension(myModel.ImageFile.FileName);
@@ -165,14 +182,104 @@ namespace Presentation.Controllers
             myModel.CategoryFK = originalProduct.CategoryFK;
             myModel.Image = originalProduct.Image;
             myModel.Stock = originalProduct.Stock;
+            myModel.Id = id;
 
             return View(myModel);
 
         }
 
-      //  [HttpPost]
-       // public IActionResult Edit(...) { }
+        [HttpPost]
+        public IActionResult Edit(EditProductViewModel myModel, [FromServices] IWebHostEnvironment host)
+        {
+            //validation....must be done here
+            string relativePath = "";
+            try
+            {
 
+                if (ModelState.IsValid == false)
+                {
+                    myModel.Categories = _categoriesRepository.GetCategories();
+                    return View(myModel);
+                }
+
+
+                if (_productsRepository.GetProduct(myModel.Id) == null) { 
+                    TempData["error"] = "Product does not even exist";
+                    return RedirectToAction("Index");
+                    }
+
+
+                if (myModel.ImageFile != null)
+                {
+                    //1. rename the image file with a unique name
+                    //eg. B269FE87-E6D3-4508-BAB0-1E0D0EE838C6.jpg
+                    string filename = Guid.NewGuid() + System.IO.Path.GetExtension(myModel.ImageFile.FileName);
+
+                    //2. absolute path - e.g. C:\Users\attar\Source\Repos\EP2023_SWD62A\Solution1\Presentation\wwwroot\images\<filename.jpg>
+                    //IWebHostEnvironment
+                    string absolutePath = host.WebRootPath + @"\images\" + filename;
+
+                    //3. relative path
+                    //    \t \r \n 
+                    relativePath = @"/images/" + filename;
+
+                    //4. save the image into the absolute path folder
+
+                    using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew))
+                    {
+                        myModel.ImageFile.CopyTo(fs);
+                        fs.Flush();
+                        fs.Close();
+                    }
+
+                    //delete the old image...so we don't waste any space for nothing
+                    var oldImagePath = _productsRepository.GetProduct(myModel.Id).Image;
+                    //to delete we need the absolute path
+                    if (oldImagePath != null)
+                    {
+                        var absolutePathToDelete = host.WebRootPath + @"\images\" + System.IO.Path.GetFileName(oldImagePath);
+                        //delete...
+                        System.IO.File.Delete(absolutePathToDelete);
+                    }
+
+                }
+                else
+                {
+                    //user would like to keep the old image
+                    relativePath = _productsRepository.GetProduct(myModel.Id).Image;
+                }
+
+                //5. assign the relativepath to the Product() ...to be saved into the db
+
+             
+                    _productsRepository.UpdateProduct(new Product()
+                    {
+                        CategoryFK = myModel.CategoryFK,
+                        Name = myModel.Name,
+                        Description = myModel.Description,
+                        Price = myModel.Price,
+                        Stock = myModel.Stock,
+                        Supplier = myModel.Supplier,
+                        WholesalePrice = myModel.WholesalePrice,
+                        Image = relativePath,
+                        Id= myModel.Id //<<<<<<<<<<<< i need to pass the id received from the hidden field, so the UpdateProduct method knows which product to update
+                    });
+
+                    TempData["message"] = "Product updated successfully";
+                
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception ex)
+            {
+                myModel.Categories = _categoriesRepository.GetCategories();
+                TempData["error"] = "Product was not updated successfully";
+                return View(myModel);
+            }
+
+
+
+        }
 
     }
 }
