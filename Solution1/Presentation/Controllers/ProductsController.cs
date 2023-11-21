@@ -1,6 +1,7 @@
 ﻿using DataAccess.Repositories;
 using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models.ViewModels;
 
@@ -44,6 +45,7 @@ namespace Presentation.Controllers
 
         //part 1: the method that loads the page with empty fields
         [HttpGet]
+        [Authorize]
         public IActionResult Create()
         {
             CreateProductViewModel myModel = new CreateProductViewModel(_categoriesRepository);
@@ -52,12 +54,15 @@ namespace Presentation.Controllers
 
         //part 2: the method which will receive the data typed by the user
         [HttpPost]
+        [Authorize]
         public IActionResult Create(CreateProductViewModel myModel, [FromServices] IWebHostEnvironment host)
         {
             //validation....must be done here
             string relativePath = "";
             try
             {
+                ModelState.Remove("Categories"); //remove Categories from being checked for any validation issues
+
                 if(ModelState.IsValid == false) //there was something wrong with one of the inputs and it is being signalled by a/some validator(s)
                 {
 
@@ -100,7 +105,8 @@ namespace Presentation.Controllers
                                             Stock = myModel.Stock,
                                             Supplier = myModel.Supplier,
                                             WholesalePrice = myModel.WholesalePrice,
-                                             Image = relativePath
+                                             Image = relativePath,
+                                             Owner = User.Identity.Name
                                         }); 
                     
                     TempData["message"] = "Product saved successfully";
@@ -142,7 +148,8 @@ namespace Presentation.Controllers
                     Stock = product.Stock,
                     Description = product.Description,
                     CategoryName = product.Category.Name,
-                    Image = product.Image
+                    Image = product.Image,
+                    Owner = product.Owner
                 };
 
                 return View(model);
@@ -152,8 +159,17 @@ namespace Presentation.Controllers
         {
             try
             {
-                _productsRepository.DeleteProduct(id);
+                if (User.Identity.Name == _productsRepository.GetProduct(id).Owner)
+                {
+ _productsRepository.DeleteProduct(id);
                 TempData["message"] = "Product deleted successfully";
+                }
+                else
+                {
+                    TempData["error"] = "Access denied";
+                }
+
+               
              }
             catch (Exception ex)
             {

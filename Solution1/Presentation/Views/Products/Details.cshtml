@@ -56,7 +56,22 @@
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new {  id=Model.Id }) | 
-                 <a href="/Products/Delete?id=@Model.Id" onclick='return confirm("Are you sure?")'>Delete</a> |
+    
+    @if(User.Identity.IsAuthenticated)
+    {
+        @Html.ActionLink("Edit | ", "Edit", new {  id=Model.Id }) 
+    }
+    
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (User.Identity.Name == Model.Owner)
+        {
+            <a href="/Products/Delete?id=@Model.Id" onclick='return confirm("Are you sure?")'>Delete |</a>
+        }
+    }
+       
+    
+    
+    
     <a asp-action="Index">Back to List</a>
 </div>

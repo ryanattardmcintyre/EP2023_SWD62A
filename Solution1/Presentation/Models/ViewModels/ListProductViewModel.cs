@@ -12,7 +12,8 @@ namespace Presentation.Models.ViewModels
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-
+        
+        public string Owner { get; set; }
         public double Price { get; set; }
 
         public int Stock { get; set; }
