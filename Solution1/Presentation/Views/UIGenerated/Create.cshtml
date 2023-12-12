@@ -1,0 +1,64 @@
+﻿@model Presentation.Controllers.SeatingPlanViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>SeatingPlanViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                @*passport
+                //....
+                continue with the rest of the controls so the user can fill up the rest of the details
+                *@
+
+
+
+                @for (int  col = 0;  col < Model.MaxColumns;  col++)
+                {
+                    for (int row = 0; row < Model.MaxRows; row++)
+                    {
+                        <input type="submit" 
+                            value="@Model.SeatingList.SingleOrDefault(x=>x.Row==row && x.Col==col).RowCol"
+                            name="SeatChosen"
+                             
+                            />
+                         
+
+@*
+                        <input type="image" src="/images/seat.png"  style="width:30px;height:30px;" name="selectedseat" 
+                        value="@Model.SeatingList.SingleOrDefault(x=>x.Row==row && x.Col==col).RowCol" 
+                            />*@
+                    }
+                }
+
+
+
+
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script type="text/javascript">
+    //function SetChosenSeat(event){
+    //    debugger;
+    //    var   clickedValue = event.target.getAttribute('data-value');
+    //  var myHidden =  document.getElementById("seatHidden");
+    //  myHidden.value = clickedValue;
+    //}
+</script>
